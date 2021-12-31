@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "Infrastructure\DataAccess\DataAccess.csproj", "{931DB2D7-B9F4-4E1E-9ACE-8592C3143FEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSServices", "Infrastructure\AWSServices\AWSServices.csproj", "{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +34,21 @@ Global
 		{931DB2D7-B9F4-4E1E-9ACE-8592C3143FEA}.Release|x64.Build.0 = Release|Any CPU
 		{931DB2D7-B9F4-4E1E-9ACE-8592C3143FEA}.Release|x86.ActiveCfg = Release|Any CPU
 		{931DB2D7-B9F4-4E1E-9ACE-8592C3143FEA}.Release|x86.Build.0 = Release|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Debug|x64.Build.0 = Debug|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Debug|x86.Build.0 = Debug|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Release|x64.ActiveCfg = Release|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Release|x64.Build.0 = Release|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Release|x86.ActiveCfg = Release|Any CPU
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{931DB2D7-B9F4-4E1E-9ACE-8592C3143FEA} = {8900AD5D-BE7E-4655-8B6A-1AEF3384329A}
+		{BAD2D3CF-9A86-4527-94A6-C1B787955C4A} = {8900AD5D-BE7E-4655-8B6A-1AEF3384329A}
 	EndGlobalSection
 EndGlobal
