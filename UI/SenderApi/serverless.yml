@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  RdStation processamento de LEads 
+#Revisar
+
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: dotnetcore3.1
+
+Resources:
+
+  SenderSendSqs:
+    Type: AWS::SQS::Queue
+    Properties: 
+      QueueName: 
+      MaximumMessageSize: 262144
+      DelaySeconds: 0
+      ReceiveMessageWaitTimeSeconds: 20
+      VisibilityTimeout: 40
+
+  SenderSendFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: sender-send-function
+      Description: RdStation processamento de LEADs
+#Revisar
+      Handler: UI.SerderApi::UI.SenderApi.Function::FunctionHandler
+      MemorySize: 128
+      Timeout: 30
+      Runtime: dotnetcore3.1
+      Events:
+        SQSQueueEvent:
+          Type: SQS
+          Properties:
+            BatchSize: 10
+            Queue: !GetAtt SenderSendSqs
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: KeyValue

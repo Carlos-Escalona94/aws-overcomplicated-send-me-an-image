@@ -1,5 +1,6 @@
 
 
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
@@ -16,8 +17,11 @@ namespace UI.SenderApi{
             this.senderService = new SenderService();
         }
 
-        public async Task FunctionHandler(SQSEvent.SQSMessage message, ILambdaContext context){
+        public async Task FunctionHandler(SQSEvent events, ILambdaContext context){
+            events.Records.Select(e => new {
 
+            });
+            context.Logger.Log("OIIII");
         }
     }
 }
