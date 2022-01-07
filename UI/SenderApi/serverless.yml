@@ -11,14 +11,79 @@ Globals:
 
 Resources:
 
+  SenderApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties: 
+      Description: WebHooks da techer
+      Name: sender-api
+      Body:
+        openapi: "3.0.1"
+        info:
+          title: "Queue Based Leveling Example"
+          version: "2021-03-31 17:32:29UTC"
+        paths:
+          /submit:
+            post:
+              responses:
+                "200":
+                  description: Hola
+              x-amazon-apigateway-integration:
+                type: "aws"
+                httpMethod: POST
+                credentials: !GetAtt SenderApiRole.Arn
+                uri: !Sub 
+                  - "arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}"
+                  - { QueueName: !GetAtt SenderSendSqs.QueueName }
+                responses:
+                  default:
+                    statusCode: "200"
+                payloadFormatVersion: "1.0"
+                requestParameters:
+                  integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
+                requestTemplates:
+                  application/json: "Action=SendMessage&MessageBody=$input.body"
+                passthroughBehavior: "never"
+        
+        x-amazon-apigateway-cors:
+          allowMethods:
+          - "*"
+          maxAge: 0
+          allowCredentials: false
+          allowOrigins:
+          - "*"
+        x-amazon-apigateway-importexport-version: "1.0"
+  
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties: 
+      Description: Deployment
+      RestApiId: !Ref SenderApi
+  
+  TecherWebHooksApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties: 
+      DeploymentId: !Ref ApiDeployment
+      RestApiId: !Ref SenderApi
+      StageName: Staging
+
+  SenderSendSqsDlq:
+    Type: AWS::SQS::Queue
+    Properties: 
+      QueueName: sender-send-function-dlq
+      MaximumMessageSize: 262144
+      DelaySeconds: 0
+      VisibilityTimeout: 90
+
   SenderSendSqs:
     Type: AWS::SQS::Queue
     Properties: 
-      QueueName: 
+      QueueName: sender-send-function
       MaximumMessageSize: 262144
       DelaySeconds: 0
-      ReceiveMessageWaitTimeSeconds: 20
       VisibilityTimeout: 40
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SenderSendSqsDlq.Arn
+        maxReceiveCount: 2
 
   SenderSendFunction:
     Type: AWS::Serverless::Function
@@ -26,7 +91,7 @@ Resources:
       FunctionName: sender-send-function
       Description: RdStation processamento de LEADs
 #Revisar
-      Handler: UI.SerderApi::UI.SenderApi.Function::FunctionHandler
+      Handler: SenderApi::UI.SenderApi.Function::FunctionHandler
       MemorySize: 128
       Timeout: 30
       Runtime: dotnetcore3.1
@@ -35,7 +100,31 @@ Resources:
           Type: SQS
           Properties:
             BatchSize: 10
-            Queue: !GetAtt SenderSendSqs
+            Queue: !GetAtt SenderSendSqs.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: KeyValue
+  
+  SenderApiRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - apigateway.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+      - PolicyName: AllowSqsIntegration
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'sqs:SendMessage'
+                - 'sqs:GetQueueUrl'
+                - 'sqs:SendMessageBatch'
+              Resource: !GetAtt SenderSendSqs.Arn

@@ -4,7 +4,7 @@ Transform: AWS::Serverless-2016-10-31
 Parameters:
   ARTIFACTSBUCKET: 
     Description: Required. Unique bucket name for deploy
-    Type: string
+    Type: String
 
 
 Resources:
@@ -18,7 +18,7 @@ Resources:
   S3ArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref DEPLOYBUCKET
+      BucketName: !Ref ARTIFACTSBUCKET
 
   BuildProject:
     Type: AWS::CodeBuild::Project
@@ -41,7 +41,7 @@ Resources:
         Type: CODEPIPELINE
       TimeoutInMinutes: 20
 
-  TecherClickUpDataPipeline:
+  Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties: 
       ArtifactStore: 

@@ -1,0 +1,35 @@
+openapi: "3.0.1"
+info:
+  title: "Queue Based Leveling Example"
+  version: "2021-03-31 17:32:29UTC"
+paths:
+  /submit:
+    post:
+      responses:
+        "200":
+          description: Hola
+      x-amazon-apigateway-integration:
+        type: "aws"
+        httpMethod: POST
+        credentials: !GetAtt SenderApiRole.Arn
+        uri: !Sub 
+          - "arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${QueueName}"
+          - { QueueName: !GetAtt SenderSendSqs.QueueName }
+        responses:
+          default:
+            statusCode: "200"
+        payloadFormatVersion: "1.0"
+        requestParameters:
+          integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
+        requestTemplates:
+          application/json: "Action=SendMessage&MessageBody=$input.body"
+        passthroughBehavior: "never"
+
+x-amazon-apigateway-cors:
+  allowMethods:
+  - "*"
+  maxAge: 0
+  allowCredentials: false
+  allowOrigins:
+  - "*"
+x-amazon-apigateway-importexport-version: "1.0"
