@@ -14,7 +14,7 @@ namespace UI.SenderApi{
         private readonly ISenderService senderService;
 
         public Function(){
-            this.senderService = new SenderService();
+            // this.senderService = new SenderService();
         }
 
         public async Task FunctionHandler(SQSEvent events, ILambdaContext context){
